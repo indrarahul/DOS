@@ -38,8 +38,7 @@ unsigned long long int n,k,x;
 
 
 //RECIEVER
-void interrupt receiver(bp, di, si, ds, es, dx, cx, bx, ax, ip, cs, flags)
-unsigned short bp, di, si, ds, es, dx, cx, bx, ax, ip, cs, flags;
+void interrupt receiver(unsigned short bp,unsigned short  di,unsigned short  si,unsigned short  ds,unsigned short  es,unsigned short  dx,unsigned short  cx,unsigned short  bx,unsigned short  ax,unsigned short  ip,unsigned short  cs,unsigned short  flags)
 {
 
         if (ax == 0) {
