@@ -9,9 +9,9 @@ unsigned long long int factorial(unsigned int n);
 void getMacAdd();
 void prepare();
 void snd_pckt();
-int access_type();
+void access_type();
 void cook_well();
-int release_type();
+void release_type();
 //FUNCTIONS
 
 
@@ -44,13 +44,6 @@ unsigned short bp, di, si, ds, es, dx, cx, bx, ax, ip, cs, flags;
 
         if (ax == 0) {
 
-                if(cx > 200)
-                {
-                        es=0;
-                        di=0;
-                        return;
-                }
-
                 es=FP_SEG(rcv);
                 di=FP_OFF(rcv);
                 rcv_len=cx;
@@ -77,11 +70,9 @@ unsigned short bp, di, si, ds, es, dx, cx, bx, ax, ip, cs, flags;
                 }
                 
                 n = factorial(atoi(num));
-                //printf("%d", n);
                 sprintf(new_buf,"%lld",n);
                 cook_well(new_buf, strlen(new_buf));
                 snd_pckt();                
-                //k=0;
                 putch('\r');
                 putch('\n');
                 
@@ -145,7 +136,6 @@ void snd_pckt()
 {
         union REGS in,out;
         struct SREGS s;
-        segread(&s);
         in.h.ah = 4;
         in.x.cx = 64;   
         in.x.si = FP_OFF(data);
@@ -173,7 +163,7 @@ void prepare()
         memcpy(data+12,type,2);
 }
 
-int access_type()
+void access_type()
 {
         union REGS in,out;
         struct SREGS s;
@@ -188,16 +178,14 @@ int access_type()
         s.ds = FP_SEG(type);
         int86x(0x60,&in,&out,&s);
         handle = out.x.ax;
-        return out.x.cflag;
 }
 
-int release_type()
+void release_type()
 {
         union REGS in,out;
         struct SREGS s;
         in.h.ah=3;
         in.x.bx=handle;
         int86x(0x60,&in,&out,&s);
-        return 0; 
 }
                 
