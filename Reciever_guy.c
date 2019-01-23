@@ -9,9 +9,9 @@ unsigned long long int factorial(unsigned int n);
 void getMacAdd();
 void prepare();
 void snd_pckt();
-int access_type();
+void access_type();
 void cook_well();
-int release_type();
+void release_type();
 //FUNCTIONS
 
 
@@ -38,18 +38,10 @@ unsigned long long int n,k,x;
 
 
 //RECIEVER
-void interrupt receiver(bp, di, si, ds, es, dx, cx, bx, ax, ip, cs, flags)
-unsigned short bp, di, si, ds, es, dx, cx, bx, ax, ip, cs, flags;
+void interrupt receiver(unsigned short bp,unsigned short  di,unsigned short  si,unsigned short  ds,unsigned short  es,unsigned short  dx,unsigned short  cx,unsigned short  bx,unsigned short  ax,unsigned short  ip,unsigned short  cs,unsigned short  flags)
 {
 
         if (ax == 0) {
-
-                if(cx > 200)
-                {
-                        es=0;
-                        di=0;
-                        return;
-                }
 
                 es=FP_SEG(rcv);
                 di=FP_OFF(rcv);
@@ -60,7 +52,7 @@ unsigned short bp, di, si, ds, es, dx, cx, bx, ax, ip, cs, flags;
         else 
         {
                 j=0;     
-                if(memcmp(rcv,brd,6)==0)  // IF BROADCASTING THEN IGNORE
+                if(memcmp(rcv,brd,6)==0)  // IF BROADCASTING THEN RETURN
                         return;
 
                 for(i=6;i<12;i++)
@@ -173,7 +165,7 @@ void prepare()
         memcpy(data+12,type,2);
 }
 
-int access_type()
+void access_type()
 {
         union REGS in,out;
         struct SREGS s;
@@ -188,16 +180,14 @@ int access_type()
         s.ds = FP_SEG(type);
         int86x(0x60,&in,&out,&s);
         handle = out.x.ax;
-        return out.x.cflag;
 }
 
-int release_type()
+void release_type()
 {
         union REGS in,out;
         struct SREGS s;
         in.h.ah=3;
         in.x.bx=handle;
-        int86x(0x60,&in,&out,&s);
-        return 0; 
+        int86x(0x60,&in,&out,&s); 
 }
                 
